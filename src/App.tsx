@@ -29,7 +29,7 @@ import {
   saveDraft,
   saveQueue
 } from "./storage";
-import { getOnlineStatus, registerBackgroundSync, submitInspection, syncPendingInspections } from "./sync";
+import { fetchServerInspections, getOnlineStatus, registerBackgroundSync, submitInspection, syncPendingInspections } from "./sync";
 import { categories, emptyDraft, type InspectionDraft, type InspectionRecord, type Rating } from "./types";
 
 const steps = ["Vị trí", "Hạng mục", "Tình trạng", "Xác nhận"] as const;
@@ -75,6 +75,7 @@ export default function App() {
   const [draft, setDraft] = useState<InspectionDraft>(emptyDraft);
   const [queue, setQueueState] = useState<InspectionRecord[]>([]);
   const [history, setHistoryState] = useState<InspectionRecord[]>([]);
+  const [serverRecords, setServerRecords] = useState<InspectionRecord[]>([]);
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [categoryFilter, setCategoryFilter] = useState<"ALL" | InspectionRecord["category"]>("ALL");
@@ -96,8 +97,16 @@ export default function App() {
   }, [draft, step]);
 
   const allRecords = useMemo(
-    () => [...queue, ...history].sort((first, second) => Date.parse(second.updatedAt) - Date.parse(first.updatedAt)),
-    [history, queue]
+    () => {
+      const recordsById = new Map<string, InspectionRecord>();
+
+      for (const record of [...serverRecords, ...history, ...queue]) {
+        recordsById.set(record.id, record);
+      }
+
+      return [...recordsById.values()].sort((first, second) => Date.parse(second.updatedAt) - Date.parse(first.updatedAt));
+    },
+    [history, queue, serverRecords]
   );
 
   const filteredRecords = useMemo(() => {
@@ -125,6 +134,13 @@ export default function App() {
     const [queuedRecords, historyRecords] = await Promise.all([getQueue(), getHistory()]);
     setQueueState(queuedRecords);
     setHistoryState(historyRecords);
+
+    try {
+      const remoteRecords = await fetchServerInspections();
+      setServerRecords(remoteRecords);
+    } catch {
+      setMessage("Chưa kết nối được PostgreSQL, đang dùng dữ liệu local.");
+    }
   };
 
   const runSync = async () => {
@@ -158,6 +174,12 @@ export default function App() {
       setHistoryState(historyRecords);
       setIsOnline(online);
       setIsReady(true);
+
+      if (online) {
+        fetchServerInspections()
+          .then((remoteRecords) => setServerRecords(remoteRecords))
+          .catch(() => setMessage("Chưa kết nối được PostgreSQL, đang dùng dữ liệu local."));
+      }
 
       if (online && queuedRecords.length) {
         runSync();

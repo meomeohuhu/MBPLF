@@ -2,24 +2,7 @@
 
 **Hoc phan:** Phat trien ung dung di dong da nen tang (VKU)  
 **Ten Mini-Project:** Ung dung kiem tra co so vat chat VKU ngoai tuyen  
-**Nhom / Sinh vien:** [Ten nhom hoac ten sinh vien]  
-**Ngay nop:** [DD/MM/YYYY]
 
----
-
-## 1. THONG TIN CHUNG VA LIEN KET NOP BAI
-
-**Thanh vien nhom:**
-
-1. [Ho va ten sinh vien] - MSSV: [22ITxxx] - Vai tro: PWA/Giao dien - Dong gop: [50%]
-2. [Ho va ten sinh vien] - MSSV: [22ITyyy] - Vai tro: Dong bo ngoai tuyen/Android - Dong gop: [50%]
-
-**Live Demo URL:** [https://your-demo.pages.dev hoac https://your-demo.vercel.app]  
-**GitHub Repository:** [https://github.com/username/vku-offline-facility-inspection]  
-**Link tai APK:** [Them link Google Drive/GitHub Release]  
-**Video demo tuy chon:** [https://youtu.be/xxx]
-
----
 
 ## 2. BANG KIEM TRA TINH NANG
 
@@ -30,17 +13,19 @@
 | 3 | Luu form ngoai tuyen | Hoan thanh | Nhap form nhieu buoc duoc luu vao IndexedDB thong qua `localforage`. |
 | 4 | Hang cho ngoai tuyen va tu dong bo | Hoan thanh | Phieu gui co UUID/thoi gian/trang thai va tu dong bo khi mang tro lai. |
 | 5 | Bang danh gia | Hoan thanh | Dashboard hien thi phieu cho/da dong bo, co filter trang thai/hang muc va panel chi tiet. |
-| 6 | Tich hop Android bang Capacitor | Hoan thanh | Project Android tich hop Camera va Network plugin de dong goi app native. |
+| 6 | Luu tru PostgreSQL da thiet bi | Hoan thanh | Backend Express API luu va doc phieu kiem tra tu PostgreSQL de nhieu may xem chung. |
+| 7 | Tich hop Android bang Capacitor | Hoan thanh | Project Android tich hop Camera va Network plugin de dong goi app native. |
 
 ---
 
 ## 3. KIEN TRUC KY THUAT VA CAU TRUC DU AN
 
-Ung dung duoc xay dung bang React, Vite, TypeScript, Capacitor va localforage. Giao dien gom form kiem tra nhieu buoc, hang cho dong bo, lich su dong bo va dashboard xem chi tiet phieu danh gia.
+Ung dung duoc xay dung bang React, Vite, TypeScript, Capacitor, localforage, Express va PostgreSQL. Giao dien gom form kiem tra nhieu buoc, hang cho dong bo, lich su dong bo va dashboard xem chi tiet phieu danh gia.
 
 - `src/App.tsx`: giao dien chinh, autosave nhap, thao tac hang cho, phan ung voi trang thai mang.
 - `src/storage.ts`: cac store IndexedDB cho nhap, hang cho va lich su.
 - `src/sync.ts`: gui du lieu mo phong, dong bo tuan tu hang cho, dang ky Background Sync.
+- `server/server.js`: API Express voi endpoint `GET/POST /api/inspections`, tu tao bang PostgreSQL.
 - `src/camera.ts`: wrapper cho Capacitor Camera.
 - `public/sw.js`: Service Worker cache-first va cau noi thong diep dong bo.
 - `android/`: project Android native do Capacitor tao.
