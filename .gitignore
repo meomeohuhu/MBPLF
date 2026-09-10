@@ -6,3 +6,6 @@ dist
 android/.gradle
 android/app/build
 android/build
+image/
+.docx
+.md

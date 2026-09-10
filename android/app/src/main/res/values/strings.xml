@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">VKU Ki&#7875;m K&#234;</string>
-    <string name="title_activity_main">VKU Ki&#7875;m K&#234;</string>
+    <string name="app_name">VKU Kiểm Kê</string>
+    <string name="title_activity_main">VKU Kiểm Kê</string>
     <string name="package_name">edu.vku.facilityinspect</string>
     <string name="custom_url_scheme">edu.vku.facilityinspect</string>
 </resources>
