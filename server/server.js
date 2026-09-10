@@ -35,12 +35,19 @@ async function initDatabase() {
       building TEXT NOT NULL,
       floor TEXT NOT NULL,
       room_number TEXT NOT NULL,
+      evaluator_name TEXT NOT NULL DEFAULT 'Chưa cập nhật',
       category TEXT NOT NULL,
       rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
       defect_notes TEXT NOT NULL,
       photo_uri TEXT,
       status TEXT NOT NULL DEFAULT 'SYNCED'
     );
+  `);
+
+  // Keep existing databases compatible when the evaluator field is added later.
+  await pool.query(`
+    ALTER TABLE inspections
+    ADD COLUMN IF NOT EXISTS evaluator_name TEXT NOT NULL DEFAULT 'Chưa cập nhật';
   `);
 }
 
@@ -52,6 +59,7 @@ function toClientRecord(row) {
     building: row.building,
     floor: row.floor,
     roomNumber: row.room_number,
+    evaluatorName: row.evaluator_name,
     category: row.category,
     rating: row.rating,
     defectNotes: row.defect_notes,
@@ -70,6 +78,7 @@ function normalizeRecord(body) {
     building: String(body.building || "").trim(),
     floor: String(body.floor || "").trim(),
     roomNumber: String(body.roomNumber || "").trim(),
+    evaluatorName: String(body.evaluatorName || "").trim(),
     category: String(body.category || "").trim(),
     rating: Number(body.rating),
     defectNotes: String(body.defectNotes || "").trim(),
@@ -85,6 +94,7 @@ function validateRecord(record) {
   if (!record.building) errors.push("building is required");
   if (!record.floor) errors.push("floor is required");
   if (!record.roomNumber) errors.push("roomNumber is required");
+  if (!record.evaluatorName) errors.push("evaluatorName is required");
   if (!record.category) errors.push("category is required");
   if (!Number.isInteger(record.rating) || record.rating < 1 || record.rating > 5) {
     errors.push("rating must be an integer from 1 to 5");
@@ -131,15 +141,16 @@ app.post("/api/inspections", async (request, response) => {
     const result = await pool.query(
       `
         INSERT INTO inspections (
-          id, created_at, updated_at, building, floor, room_number,
+          id, created_at, updated_at, building, floor, room_number, evaluator_name,
           category, rating, defect_notes, photo_uri, status
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         ON CONFLICT (id) DO UPDATE SET
           updated_at = EXCLUDED.updated_at,
           building = EXCLUDED.building,
           floor = EXCLUDED.floor,
           room_number = EXCLUDED.room_number,
+          evaluator_name = EXCLUDED.evaluator_name,
           category = EXCLUDED.category,
           rating = EXCLUDED.rating,
           defect_notes = EXCLUDED.defect_notes,
@@ -154,6 +165,7 @@ app.post("/api/inspections", async (request, response) => {
         record.building,
         record.floor,
         record.roomNumber,
+        record.evaluatorName,
         record.category,
         record.rating,
         record.defectNotes,

@@ -86,7 +86,7 @@ export default function App() {
 
   const canProceed = useMemo(() => {
     if (step === 0) {
-      return draft.building.trim() && draft.floor.trim() && draft.roomNumber.trim();
+      return draft.building.trim() && draft.floor.trim() && draft.roomNumber.trim() && draft.evaluatorName.trim();
     }
 
     if (step === 2) {
@@ -400,6 +400,8 @@ export default function App() {
                   <div className="detail-stats">
                     <span>Tòa nhà</span>
                     <strong>{selectedRecord.building}</strong>
+                    <span>Người đánh giá</span>
+                    <strong>{selectedRecord.evaluatorName}</strong>
                     <span>Tầng</span>
                     <strong>{selectedRecord.floor}</strong>
                     <span>Đánh giá</span>
@@ -457,6 +459,10 @@ export default function App() {
                   Số phòng
                   <input value={draft.roomNumber} onChange={(event) => updateDraft("roomNumber", event.target.value)} placeholder="VD: B1-103" />
                 </label>
+                <label>
+                  Người đánh giá
+                  <input value={draft.evaluatorName} onChange={(event) => updateDraft("evaluatorName", event.target.value)} placeholder="VD: Nguyễn Văn A" />
+                </label>
               </div>
             )}
 
@@ -511,6 +517,8 @@ export default function App() {
               <div className="form-page">
                 <h1>Xác nhận</h1>
                 <div className="review-grid">
+                  <span>Người đánh giá</span>
+                  <strong>{draft.evaluatorName || "Chưa nhập"}</strong>
                   <span>Tòa nhà</span>
                   <strong>{draft.building || "Chưa nhập"}</strong>
                   <span>Tầng / Phòng</span>

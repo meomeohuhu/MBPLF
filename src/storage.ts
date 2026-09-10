@@ -17,7 +17,7 @@ const historyStore = localforage.createInstance({
 });
 
 export async function getDraft(): Promise<InspectionDraft> {
-  return (await draftStore.getItem<InspectionDraft>("current")) ?? emptyDraft;
+  return { ...emptyDraft, ...((await draftStore.getItem<InspectionDraft>("current")) ?? {}) };
 }
 
 export async function saveDraft(draft: InspectionDraft): Promise<void> {
@@ -29,7 +29,10 @@ export async function clearDraft(): Promise<void> {
 }
 
 export async function getQueue(): Promise<InspectionRecord[]> {
-  return (await queueStore.getItem<InspectionRecord[]>("records")) ?? [];
+  return ((await queueStore.getItem<InspectionRecord[]>("records")) ?? []).map((record) => ({
+    ...record,
+    evaluatorName: record.evaluatorName ?? "Chưa cập nhật"
+  }));
 }
 
 export async function saveQueue(records: InspectionRecord[]): Promise<void> {
@@ -47,7 +50,10 @@ export async function updateQueuedInspection(record: InspectionRecord): Promise<
 }
 
 export async function getHistory(): Promise<InspectionRecord[]> {
-  return (await historyStore.getItem<InspectionRecord[]>("records")) ?? [];
+  return ((await historyStore.getItem<InspectionRecord[]>("records")) ?? []).map((record) => ({
+    ...record,
+    evaluatorName: record.evaluatorName ?? "Chưa cập nhật"
+  }));
 }
 
 export async function saveHistory(records: InspectionRecord[]): Promise<void> {

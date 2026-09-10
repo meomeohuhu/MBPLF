@@ -11,6 +11,7 @@ export interface InspectionRecord {
   building: string;
   floor: string;
   roomNumber: string;
+  evaluatorName: string;
   category: InspectionCategory;
   rating: Rating;
   defectNotes: string;
@@ -24,6 +25,7 @@ export const emptyDraft: InspectionDraft = {
   building: "",
   floor: "",
   roomNumber: "",
+  evaluatorName: "",
   category: "Phần cứng",
   rating: 3,
   defectNotes: "",
