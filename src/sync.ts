@@ -2,7 +2,9 @@ import { Network } from "@capacitor/network";
 import { addToHistory, getQueue, saveQueue } from "./storage";
 import type { InspectionRecord } from "./types";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
+// Use the shared Render API by default so a local web build still sees data
+// created from other browsers and Android devices.
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://vku-facility-inspection.onrender.com";
 
 export async function getOnlineStatus(): Promise<boolean> {
   try {
